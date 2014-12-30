@@ -1,7 +1,7 @@
 #include <sourcemod>
 #include <sdktools>
  
-#define PLUGIN_VERSION "1.3.2"
+#define PLUGIN_VERSION "1.4.0"
  
  new g_CollisionOffset;
  
@@ -20,6 +20,8 @@ public OnPluginStart()
 	LoadTranslations("common.phrases");
 	RegAdminCmd("sm_color", cmd_Color, ADMFLAG_CUSTOM3, "Changes a player's color");
 	RegAdminCmd("sm_rgbcolor", cmd_RgbColor, ADMFLAG_CUSTOM3, "Changes a player's color using rgb values");
+	RegAdminCmd("sm_splitcolor", cmd_SplitColor, ADMFLAG_CUSTOM3, "Splits target into 2 colors (yellow, green)");
+	RegAdminCmd("sm_randcolor", cmd_RandomColor, ADMFLAG_CUSTOM3, "Sets targets to random colors");
 	RegAdminCmd("sm_tp", cmd_Tp, ADMFLAG_CUSTOM3, "Teleports one player to another. Put 1 argument for self-tp");
 	RegAdminCmd("sm_tpaim", cmd_TpAim, ADMFLAG_CUSTOM3, "Teleports player to your aim. Put no argument for self-tp");
 	RegAdminCmd("sm_tphere", cmd_TpHere, ADMFLAG_CUSTOM3, "Teleports a player to you");
@@ -135,6 +137,109 @@ public Action:cmd_RgbColor(client, args)
 		}
 	} else {
 		ReplyToCommand(client, "[SM] Usage: sm_rgbcolor <#userid|name> <0-255> <0-255> <0-255>");
+	}
+	return Plugin_Handled;
+}
+
+public Action:cmd_SplitColor(client, args)
+{
+	new String:arg1[MAX_NAME_LENGTH];
+		
+	if(args == 1 && GetCmdArg(1, arg1, sizeof(arg1)))
+	{
+		
+		new String:target_name[MAX_TARGET_LENGTH];
+		new target_list[MAXPLAYERS], target_count;
+		new bool:tn_is_ml;
+		
+		if ((target_count = ProcessTargetString(arg1, client, target_list, MAXPLAYERS, COMMAND_FILTER_ALIVE, target_name, sizeof(target_name), tn_is_ml)) <= 0)
+		{
+			ReplyToTargetError(client, target_count);
+			return Plugin_Handled;
+		}
+		
+		new splitPoint = target_count / 2;
+		for (new i = 0; i < target_count; i++)
+		{
+			if(i <= splitPoint)
+			{
+				SetEntityRenderColor(target_list[i], 0, 255, 0, 255);
+			}
+			else
+			{
+				SetEntityRenderColor(target_list[i], 255, 255, 0, 255);
+			}
+			LogAction(client, target_list[i], "%L changed the color of %L a split color.", client, target_list[i]);
+		}
+		
+		if (tn_is_ml)
+		{
+			ShowActivity2(client, "[SM] ", "Changed the color of %t to a split color.", target_name);
+		} else {
+			ShowActivity2(client, "[SM] ", "Changed the color of %s to a split color.", target_name);
+		}
+	} else {
+		ReplyToCommand(client, "[SM] Usage: sm_splitcolor <@t|@ct|@all|@alive>");
+	}
+	return Plugin_Handled;
+}
+
+public Action:cmd_RandomColor(client, args)
+{
+	new String:arg1[MAX_NAME_LENGTH];
+		
+	if(args == 1 && GetCmdArg(1, arg1, sizeof(arg1)))
+	{
+		new String:target_name[MAX_TARGET_LENGTH];
+		new target_list[MAXPLAYERS], target_count;
+		new bool:tn_is_ml;
+		
+		if ((target_count = ProcessTargetString(arg1, client, target_list, MAXPLAYERS, COMMAND_FILTER_ALIVE, target_name, sizeof(target_name), tn_is_ml)) <= 0)
+		{
+			ReplyToTargetError(client, target_count);
+			return Plugin_Handled;
+		}
+		
+		for (new i = 0; i < target_count; i++)
+		{
+			new randColor = GetRandomInt(1, 6);
+			
+			if(randColor == 1)
+			{
+				SetEntityRenderColor(target_list[i], 255, 0, 0, 255);
+			}
+			else if(randColor == 2)
+			{
+				SetEntityRenderColor(target_list[i], 0, 255, 0, 255);
+			}
+			else if(randColor == 3)
+			{
+				SetEntityRenderColor(target_list[i], 0, 0, 255, 255);
+			}
+			else if(randColor == 4)
+			{
+				SetEntityRenderColor(target_list[i], 255, 255, 0, 255);
+			}
+			else if(randColor == 5)
+			{
+				SetEntityRenderColor(target_list[i], 255, 102, 0, 255);
+			}
+			else if(randColor == 6)
+			{
+				SetEntityRenderColor(target_list[i], 255, 0, 255, 255);
+			}
+			
+			LogAction(client, target_list[i], "%L changed the color of %L a random color.", client, target_list[i]);
+		}
+		
+		if (tn_is_ml)
+		{
+			ShowActivity2(client, "[SM] ", "Changed the color of %t to a random color.", target_name);
+		} else {
+			ShowActivity2(client, "[SM] ", "Changed the color of %s to a random color.", target_name);
+		}
+	} else {
+		ReplyToCommand(client, "[SM] Usage: sm_randcolor <@t|@ct|@all|@alive>");
 	}
 	return Plugin_Handled;
 }
