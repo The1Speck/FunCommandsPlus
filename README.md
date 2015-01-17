@@ -1,4 +1,4 @@
-FunCommands-
+FunCommands+
 ============
 
 Additional commands for SourceMod admins.
