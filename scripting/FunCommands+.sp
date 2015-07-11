@@ -292,7 +292,7 @@ public performTp(admin, client0, client1)
 	pos[2] += 10;
 	TeleportEntity(client0, pos, NULL_VECTOR, NULL_VECTOR);
 	new Handle:tmrDataPack;
-	CreateDataTimer(1.0, becomeSolid, tmrDataPack);
+	CreateDataTimer(0.5, becomeSolid, tmrDataPack);
 	WritePackCell(tmrDataPack, admin);
 	WritePackCell(tmrDataPack, client0);
 	WritePackCell(tmrDataPack, client1);
