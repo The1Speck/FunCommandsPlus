@@ -311,7 +311,7 @@ public Action:becomeSolid(Handle:timer, Handle:tmrDataPack)
 	SetEntData(client0, g_CollisionOffset, coll0, 4, true); //set back to original collision
 	SetEntData(client1, g_CollisionOffset, coll1, 4, true);
 	ShowActivity2(admin, "[SM] ", "Teleported %N to %N.", client0, client1);
-	LogAction(admin, client0, "%L Teleported %N to %N.", client0, client1);
+	LogAction(admin, client0, "%L Teleported %N to %N.", admin, client0, client1);
 	return Plugin_Handled;
 }
 
@@ -336,6 +336,7 @@ public Action:cmd_TpAim(client, args)
 	{
 		TR_GetEndPosition(pos);
 	}
+		
 	pos[2]+= 10;
 	if(args == 0)
 	{
