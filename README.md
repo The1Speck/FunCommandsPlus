@@ -1,4 +1,4 @@
-FunCommands+
+FunCommands+ v2.0.0
 ============
 
 Additional commands for SourceMod admins.
@@ -20,3 +20,7 @@ sm_tp - Teleports one player to another. Put 1 argument for self-tp
 sm_tpaim - Teleports player to your aim. Put no argument for self-tp
 
 sm_tphere - Teleports a player to you
+
+sm_heal - Heals a player to full health
+
+sm_sethealth - Sets a player's health
